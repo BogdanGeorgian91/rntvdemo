@@ -1,5 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator, StyleSheet, Text, Platform, Animated } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import {
+  View,
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  Platform,
+  Animated,
+} from 'react-native';
 import { TV_THEME } from '../styles/theme';
 
 interface LoadingSpinnerProps {
@@ -7,7 +14,7 @@ interface LoadingSpinnerProps {
 }
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ message }) => {
-  const [fadeAnim] = useState(new Animated.Value(0));
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -15,15 +22,13 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ message }) => {
       duration: 500,
       useNativeDriver: true,
     }).start();
-  }, [fadeAnim]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
-        <ActivityIndicator 
-          size={Platform.isTV ? 'large' : 'large'} 
-          color={TV_THEME.colors.primary} 
-        />
+        <ActivityIndicator size={'large'} color={TV_THEME.colors.primary} />
         {message && <Text style={styles.message}>{message}</Text>}
         <Text style={styles.hint}>Please wait...</Text>
       </Animated.View>
