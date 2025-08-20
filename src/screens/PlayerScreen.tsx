@@ -11,7 +11,6 @@ import { NavigationProp, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorMessage } from '../components/ErrorMessage';
-// import { TV_THEME } from '../styles/theme';
 
 interface PlayerScreenProps {
   navigation: NavigationProp<RootStackParamList, 'Player'>;
@@ -22,7 +21,7 @@ export const PlayerScreen: React.FC<PlayerScreenProps> = ({
   navigation,
   route,
 }) => {
-  const { item } = route.params;
+  const { item } = route?.params;
   const videoRef = useRef<VideoRef>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

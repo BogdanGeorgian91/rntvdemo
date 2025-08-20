@@ -5,7 +5,6 @@ import {
   FlatList,
   Text,
   Platform,
-  useTVEventHandler,
   Dimensions,
   ScrollView,
 } from 'react-native';
@@ -40,16 +39,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   useEffect(() => {
     loadCatalog();
   }, []);
-
-  // the TV event handler hook for react-native-tvos
-  useTVEventHandler(event => {
-    if (Platform.isTV) {
-      console.log('TV event handler:', event);
-      if (event && event.eventType === 'playPause') {
-        // Play/Pause pressed on home screen
-      }
-    }
-  });
 
   const loadCatalog = () => {
     setLoading(true);
@@ -111,7 +100,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         contentContainerStyle={styles.scrollContent}
       >
         <View style={styles.headerContainer}>
-          <AppIcon size={Platform.isTV ? 50 : 40} />
+          <AppIcon size={50} />
           <Text style={styles.header}>Featured Content</Text>
         </View>
         <FlatList

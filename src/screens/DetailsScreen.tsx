@@ -92,14 +92,14 @@ export const DetailsScreen: React.FC<DetailsScreenProps> = ({
 
           <View style={styles.metadata}>
             <Text style={styles.duration}>
-              Duration: {formatDurationDetail(item.duration)}
+              Duration: {formatDurationDetail(item?.duration)}
             </Text>
             <Text style={styles.format}>
               Format: {item?.streamUrl.includes('.m3u8') ? 'HLS' : 'MP4'}
             </Text>
           </View>
 
-          <Text style={styles.description}>{item.description}</Text>
+          <Text style={styles.description}>{item?.description}</Text>
 
           {returnPlatformBtn}
         </View>

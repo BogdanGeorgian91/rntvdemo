@@ -8,6 +8,7 @@ require Pod::Executable.execute_command('node', ['-p',
 platform :tvos, min_ios_version_supported
 prepare_react_native_project!
 
+# I was getting a log that it uses the legacy architecture so I've set to use NEW Architecture
 ENV['RCT_NEW_ARCH_ENABLED'] = '1'
 
 linkage = ENV['USE_FRAMEWORKS']
