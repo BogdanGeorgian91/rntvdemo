@@ -1,5 +1,13 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
+# Android TV simulator demo
+
+https://github.com/user-attachments/assets/acf6d06c-e858-4d1b-ac51-8fc1e3764437
+
+# tvOS simulator demo (everything just looks better on Apple platforms)
+
+https://github.com/user-attachments/assets/9d6cf373-d55b-4519-b24f-f7f09dde3036
+
 # Getting Started
 
 > **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
