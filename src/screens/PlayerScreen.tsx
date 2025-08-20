@@ -86,7 +86,17 @@ export const PlayerScreen: React.FC<PlayerScreenProps> = ({
     <View style={styles.container}>
       <Video
         ref={videoRef}
-        source={{ uri: item.streamUrl }}
+        source={{
+          uri: item?.streamUrl,
+          // for potential ExoPlayer issue
+          // https://stackoverflow.com/questions/58721016/exoplayer-loop-creates-outofmemoryerror-when-playing-video-from-local-file/64900778#64900778
+          bufferConfig: {
+            minBufferMs: 2500,
+            maxBufferMs: 5000,
+            bufferForPlaybackMs: 2500,
+            bufferForPlaybackAfterRebufferMs: 2500,
+          },
+        }}
         style={styles.fullScreen}
         controls={true}
         resizeMode="contain"
