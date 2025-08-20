@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TouchableNativeFeedback,
   Platform,
   TouchableOpacity,
+  Animated,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { VideoItem } from '../types';
@@ -30,10 +31,21 @@ export const ContentTile: React.FC<ContentTileProps> = ({
   tileHeight = TV_THEME.tile.height,
 }) => {
   const [focused, setFocused] = useState(false);
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  
   const canUseForeground =
     Platform.OS === 'android' &&
     TouchableNativeFeedback.canUseNativeForeground &&
     TouchableNativeFeedback.canUseNativeForeground();
+
+  useEffect(() => {
+    Animated.spring(scaleAnim, {
+      toValue: focused ? TV_THEME.tile.focusScale : 1,
+      friction: 3,
+      tension: 100,
+      useNativeDriver: true,
+    }).start();
+  }, [focused, scaleAnim]);
 
   const imgSrc = item.thumbnail
     ? {
@@ -45,6 +57,8 @@ export const ContentTile: React.FC<ContentTileProps> = ({
   const dynamicStyles = StyleSheet.create({
     container: {
       width: tileWidth,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     imageContainer: {
       height: tileHeight,
@@ -54,7 +68,16 @@ export const ContentTile: React.FC<ContentTileProps> = ({
   });
 
   const content = (
-    <View style={[styles.tileContent, focused && styles.tileContentFocused]}>
+    <Animated.View 
+      style={[
+        styles.tileContent, 
+        focused && styles.tileContentFocused,
+        { 
+          transform: [{ scale: scaleAnim }],
+          width: tileWidth - 20, // Account for wrapper padding
+        }
+      ]}
+    >
       <View style={styles.imgCtr}>
         <View style={dynamicStyles.imageContainer}>
           <FastImage
@@ -75,7 +98,7 @@ export const ContentTile: React.FC<ContentTileProps> = ({
           </Text>
         </View>
       </View>
-    </View>
+    </Animated.View>
   );
 
   if (Platform.OS === 'android' && Platform.isTV) {
@@ -85,17 +108,18 @@ export const ContentTile: React.FC<ContentTileProps> = ({
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         hasTVPreferredFocus={hasTVPreferredFocus}
+        focusable={true}
         useForeground={canUseForeground}
         testID={`content-tile-${index}`}
       >
-        <View style={dynamicStyles.container}>{content}</View>
+        <View style={[dynamicStyles.container, styles.tileWrapper]}>{content}</View>
       </TouchableNativeFeedback>
     );
   }
 
   return (
     <TouchableOpacity
-      style={dynamicStyles.container}
+      style={[dynamicStyles.container, styles.tileWrapper]}
       activeOpacity={0.7}
       onPress={() => onPress(item)}
       onFocus={() => setFocused(true)}
@@ -109,6 +133,10 @@ export const ContentTile: React.FC<ContentTileProps> = ({
 };
 
 const styles = StyleSheet.create({
+  tileWrapper: {
+    overflow: 'visible',
+    padding: 10, // Add padding to prevent clipping when scaled
+  },
   tileContent: {
     backgroundColor: TV_THEME.colors.tileBg,
     borderRadius: TV_THEME.borderRadius.md,
@@ -117,7 +145,6 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   tileContentFocused: {
-    transform: [{ scale: TV_THEME.tile.focusScale }],
     borderWidth: 2,
     borderColor: TV_THEME.colors.focus,
     elevation: 8,

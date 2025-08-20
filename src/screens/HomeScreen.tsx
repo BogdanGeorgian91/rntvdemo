@@ -24,7 +24,7 @@ interface HomeScreenProps {
 
 const { width: screenWidth } = Dimensions.get('window');
 const PADDING_HORIZONTAL = Platform.isTV ? 60 : 20;
-const TILE_MARGIN = 10;
+const TILE_MARGIN = 15; // Increased to accommodate scaling
 const COLUMNS = 3;
 
 // Calculate tile width based on screen width
@@ -36,14 +36,26 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [items, setItems] = useState<VideoItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [focusedIndex, setFocusedIndex] = useState(0);
 
   useEffect(() => {
     loadCatalog();
   }, []);
 
+  // Listen for when we navigate back to this screen
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('focus', () => {
+  //     // Screen is focused, the focus will be restored to the last selected tile
+  //     // The hasTVPreferredFocus prop will handle restoring focus
+  //   });
+
+  //   return unsubscribe;
+  // }, [navigation]);
+
   // the TV event handler hook for react-native-tvos
   useTVEventHandler(event => {
     if (Platform.isTV) {
+      console.log('TV event handler:', event);
       if (event && event.eventType === 'playPause') {
         // Play/Pause pressed on home screen
       }
@@ -77,7 +89,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     }, 2000); // Increased to 2 seconds for better visibility
   };
 
-  const handleTilePress = (item: VideoItem) => {
+  const handleTilePress = (item: VideoItem, index: number) => {
+    setFocusedIndex(index); // Remember which tile was pressed
     navigation.navigate('Details', { item });
   };
 
@@ -85,8 +98,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     return (
       <ContentTile
         item={item}
-        onPress={handleTilePress}
-        hasTVPreferredFocus={index === 0}
+        onPress={() => handleTilePress(item, index)}
+        hasTVPreferredFocus={index === focusedIndex}
         index={index}
         tileWidth={TILE_WIDTH}
         tileHeight={TILE_HEIGHT}
@@ -101,6 +114,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   if (error) {
     return <ErrorMessage message={error} onRetry={loadCatalog} />;
   }
+
+  console.log('Rendering focusedIndex', focusedIndex);
 
   return (
     <View style={styles.container}>

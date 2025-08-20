@@ -1,23 +1,25 @@
-import { formatDuration } from '../src/utils/utils';
+// Unit Test 1: Test the actual formatDuration utility functions with real values
+import { formatDurationTile, formatDurationDetail } from '../src/utils/utils';
 
-describe('formatDuration', () => {
-  it('formats seconds to MM:SS for durations under an hour', () => {
-    expect(formatDuration(596)).toBe('9:56');
-    expect(formatDuration(60)).toBe('1:00');
-    expect(formatDuration(75)).toBe('1:15');
-    expect(formatDuration(0)).toBe('0:00');
+describe('formatDuration utility functions', () => {
+  describe('formatDurationTile', () => {
+    it('formats seconds into MM:SS format correctly', () => {
+      // Test with actual video durations from our catalog
+      expect(formatDurationTile(596)).toBe('9:56');  // Big Buck Bunny duration
+      expect(formatDurationTile(888)).toBe('14:48'); // Sintel duration
+      expect(formatDurationTile(75)).toBe('1:15');   // For Bigger Joyrides duration
+      expect(formatDurationTile(0)).toBe('0:00');     // Edge case
+      expect(formatDurationTile(3661)).toBe('1:01:01'); // Over an hour
+    });
   });
 
-  it('formats seconds to H:MM:SS for durations over an hour', () => {
-    expect(formatDuration(3600)).toBe('1:00:00');
-    expect(formatDuration(3661)).toBe('1:01:01');
-    expect(formatDuration(7200)).toBe('2:00:00');
-    expect(formatDuration(5432)).toBe('1:30:32');
-  });
-
-  it('pads minutes and seconds with leading zeros when needed', () => {
-    expect(formatDuration(65)).toBe('1:05');
-    expect(formatDuration(3605)).toBe('1:00:05');
-    expect(formatDuration(3665)).toBe('1:01:05');
+  describe('formatDurationDetail', () => {
+    it('formats seconds into human readable format', () => {
+      // Test with actual video durations
+      expect(formatDurationDetail(596)).toBe('9m 56s');  // Big Buck Bunny
+      expect(formatDurationDetail(3661)).toBe('1h 1m');  // Over an hour
+      expect(formatDurationDetail(60)).toBe('1m 0s');    // Exactly one minute
+      expect(formatDurationDetail(30)).toBe('0m 30s');   // Less than a minute
+    });
   });
 });

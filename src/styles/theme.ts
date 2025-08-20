@@ -24,7 +24,7 @@ export const TV_THEME = {
   tile: {
     width: 320, // fallback width
     height: 180, // fallback height
-    focusScale: 1.05,
+    focusScale: 1.1,
   },
   borderRadius: {
     sm: 4,
