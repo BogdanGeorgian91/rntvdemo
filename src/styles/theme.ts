@@ -22,9 +22,9 @@ export const TV_THEME = {
     caption: { fontSize: 16 },
   },
   tile: {
-    width: 300,
-    height: 180,
-    focusScale: 1.1,
+    width: 320, // fallback width
+    height: 180, // fallback height
+    focusScale: 1.05,
   },
   borderRadius: {
     sm: 4,

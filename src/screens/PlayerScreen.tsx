@@ -1,38 +1,50 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Platform, useTVEventHandler, BackHandler } from 'react-native';
-import Video from 'react-native-video';
+import {
+  View,
+  StyleSheet,
+  Platform,
+  useTVEventHandler,
+  BackHandler,
+} from 'react-native';
+import Video, { VideoRef } from 'react-native-video';
 import { NavigationProp, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorMessage } from '../components/ErrorMessage';
-import { TV_THEME } from '../styles/theme';
+// import { TV_THEME } from '../styles/theme';
 
 interface PlayerScreenProps {
   navigation: NavigationProp<RootStackParamList, 'Player'>;
   route: RouteProp<RootStackParamList, 'Player'>;
 }
 
-export const PlayerScreen: React.FC<PlayerScreenProps> = ({ navigation, route }) => {
+export const PlayerScreen: React.FC<PlayerScreenProps> = ({
+  navigation,
+  route,
+}) => {
   const { item } = route.params;
-  const videoRef = useRef<Video>(null);
+  const videoRef = useRef<VideoRef>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [paused, setPaused] = useState(false);
 
-  // Use the TV event handler hook for react-native-tvos
-  if (Platform.isTV) {
-    useTVEventHandler((event) => {
+  // TV event handler hook for react-native-tvos
+  useTVEventHandler(event => {
+    if (Platform.isTV) {
       if (event && event.eventType === 'playPause') {
         setPaused(prev => !prev);
       }
-    });
-  }
+    }
+  });
 
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      navigation.goBack();
-      return true;
-    });
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        navigation.goBack();
+        return true;
+      },
+    );
 
     return () => backHandler.remove();
   }, [navigation]);
@@ -49,7 +61,16 @@ export const PlayerScreen: React.FC<PlayerScreenProps> = ({ navigation, route })
   const handleError = (errorData: any) => {
     console.error('Video playback error:', errorData);
     setLoading(false);
-    setError(`Failed to play video: ${errorData?.error?.errorString || 'Unknown error'}`);
+
+    let errorMessage = 'Unable to play this video.';
+    if (errorData?.error?.errorCode === '22004') {
+      errorMessage =
+        'Video not found or unavailable. Please try another video.';
+    } else if (errorData?.error?.errorString) {
+      errorMessage = `Playback error: ${errorData.error.errorString}`;
+    }
+
+    setError(errorMessage);
   };
 
   const handleRetry = () => {
@@ -59,12 +80,7 @@ export const PlayerScreen: React.FC<PlayerScreenProps> = ({ navigation, route })
   };
 
   if (error) {
-    return (
-      <ErrorMessage 
-        message={error} 
-        onRetry={handleRetry}
-      />
-    );
+    return <ErrorMessage message={error} onRetry={handleRetry} />;
   }
 
   return (

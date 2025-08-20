@@ -1,91 +1,141 @@
 import React, { useState } from 'react';
-import { View, Text, Image, Pressable, StyleSheet, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableNativeFeedback,
+  Platform,
+  TouchableOpacity,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { VideoItem } from '../types';
 import { TV_THEME } from '../styles/theme';
+import { formatDurationTile } from '../utils/utils';
 
 interface ContentTileProps {
   item: VideoItem;
   onPress: (item: VideoItem) => void;
   hasTVPreferredFocus?: boolean;
   index?: number;
+  tileWidth?: number;
+  tileHeight?: number;
 }
 
-export const ContentTile: React.FC<ContentTileProps> = ({ 
-  item, 
-  onPress, 
+export const ContentTile: React.FC<ContentTileProps> = ({
+  item,
+  onPress,
   hasTVPreferredFocus = false,
-  index = 0 
+  index = 0,
+  tileWidth = TV_THEME.tile.width,
+  tileHeight = TV_THEME.tile.height,
 }) => {
   const [focused, setFocused] = useState(false);
+  const canUseForeground =
+    Platform.OS === 'android' &&
+    TouchableNativeFeedback.canUseNativeForeground &&
+    TouchableNativeFeedback.canUseNativeForeground();
 
-  const formatDuration = (seconds: number): string => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    
-    if (hours > 0) {
-      return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
-    return `${minutes}:${secs.toString().padStart(2, '0')}`;
-  };
+  const imgSrc = item.thumbnail
+    ? {
+        uri: item.thumbnail,
+        priority: FastImage.priority.normal,
+      }
+    : require('../assets/imgs/videoPlaceholder.png');
+
+  const dynamicStyles = StyleSheet.create({
+    container: {
+      width: tileWidth,
+    },
+    imageContainer: {
+      height: tileHeight,
+      position: 'relative',
+      backgroundColor: TV_THEME.colors.tileBg,
+    },
+  });
+
+  const content = (
+    <View style={[styles.tileContent, focused && styles.tileContentFocused]}>
+      <View style={styles.imgCtr}>
+        <View style={dynamicStyles.imageContainer}>
+          <FastImage
+            style={styles.thumbnail}
+            source={imgSrc}
+            resizeMode={FastImage.resizeMode.cover}
+            testID="thumbnail"
+          />
+          <View style={styles.durationBadge}>
+            <Text style={styles.durationText}>
+              {formatDurationTile(item?.duration)}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.infoContainer}>
+          <Text style={styles.title} numberOfLines={1}>
+            {item?.title}
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+
+  if (Platform.OS === 'android' && Platform.isTV) {
+    return (
+      <TouchableNativeFeedback
+        onPress={() => onPress(item)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        hasTVPreferredFocus={hasTVPreferredFocus}
+        useForeground={canUseForeground}
+        testID={`content-tile-${index}`}
+      >
+        <View style={dynamicStyles.container}>{content}</View>
+      </TouchableNativeFeedback>
+    );
+  }
 
   return (
-    <Pressable
-      style={[
-        styles.container,
-        focused && styles.containerFocused,
-      ]}
+    <TouchableOpacity
+      style={dynamicStyles.container}
+      activeOpacity={0.7}
       onPress={() => onPress(item)}
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
       hasTVPreferredFocus={hasTVPreferredFocus}
       testID={`content-tile-${index}`}
     >
-      <View style={styles.imageContainer}>
-        <FastImage
-          style={styles.thumbnail}
-          source={{
-            uri: item.thumbnail,
-            priority: FastImage.priority.normal,
-          }}
-          resizeMode={FastImage.resizeMode.cover}
-          testID="thumbnail"
-        />
-        <View style={styles.durationBadge}>
-          <Text style={styles.durationText}>{formatDuration(item.duration)}</Text>
-        </View>
-      </View>
-      <View style={styles.infoContainer}>
-        <Text style={styles.title} numberOfLines={1}>
-          {item.title}
-        </Text>
-      </View>
-    </Pressable>
+      {content}
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: TV_THEME.tile.width,
+  tileContent: {
     backgroundColor: TV_THEME.colors.tileBg,
     borderRadius: TV_THEME.borderRadius.md,
     overflow: 'hidden',
-    margin: TV_THEME.spacing.xs,
+    borderWidth: 2,
+    borderColor: 'transparent',
   },
-  containerFocused: {
+  tileContentFocused: {
     transform: [{ scale: TV_THEME.tile.focusScale }],
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: TV_THEME.colors.focus,
+    elevation: 8,
+    shadowColor: TV_THEME.colors.focus,
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
   },
-  imageContainer: {
-    position: 'relative',
+  imgCtr: {
+    flex: 1,
     width: '100%',
-    height: TV_THEME.tile.height,
+    overflow: 'hidden',
   },
   thumbnail: {
     width: '100%',
     height: '100%',
+    backgroundColor: TV_THEME.colors.tileBg,
+    borderRadius: TV_THEME.borderRadius.md,
   },
   durationBadge: {
     position: 'absolute',
@@ -103,6 +153,7 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     padding: TV_THEME.spacing.sm,
+    backgroundColor: TV_THEME.colors.tileBg,
   },
   title: {
     color: TV_THEME.colors.text,

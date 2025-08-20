@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="51.2" fill="#e50914"/>
+  
+  <!-- TV Screen -->
+  <rect x="76.8" y="76.8" width="358.4" height="250.87999999999997" 
+        rx="25.6" fill="none" stroke="#ffffff" stroke-width="15.36"/>
+  
+  <!-- Play Button -->
+  <path d="M 217.6 184.32 L 217.6 276.48 L 309.76 230.4 Z" fill="#ffffff"/>
+  
+  <!-- TV Stand -->
+  <rect x="179.2" y="327.67999999999995" 
+        width="153.6" height="25.6" fill="#ffffff"/>
+  <rect x="128" y="345.59999999999997" 
+        width="256" height="40.96" rx="10.24" fill="#ffffff"/>
+  
+  <!-- Text -->
+  <text x="256" y="471.04" font-family="Arial, sans-serif" 
+        font-size="40.96" font-weight="bold" fill="#ffffff" 
+        text-anchor="middle">TV DEMO</text>
+</svg>

@@ -62,36 +62,26 @@ If everything is set up correctly, you should see your new app running in the An
 
 This is one way to run your app — you can also build it directly from Android Studio or Xcode.
 
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
 ## Congratulations! :tada:
 
 You've successfully run and modified your React Native App. :partying_face:
 
-### Now what?
+## Libraries Used:
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+- "@d11/react-native-fast-image" which is an actively maintained fork of "react-native-fast-image": https://www.npmjs.com/package/@d11/react-native-fast-image
+- for navigation: @react-navigation/native and @react-navigation/stack
+- react-native-gesture-handler
+- react-native-safe-area-context
+- react-native-screens
+- react-native-video
 
-# Troubleshooting
+## While developing
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+After initial Claude work, I've started reading its work and fixed some minor issues: unused imports highlighted by the editor and a hook which wasn't called at the top most level, which was breaking an essential rule of hooks, though the app didn't crash.
 
-# Learn More
+Removed "@react-native/new-app-screen" package as it was not necessary after project init.
 
-To learn more about React Native, take a look at the following resources:
+Noticed that the links for retrieving the thumbnails for 1st, 4th and 5th assets returned a default placeholder image saying "The image you are requesting does not exist of is no longer available" and I thought initially to create thumbnail from video with "react-native-create-thumbnail" package (https://www.npmjs.com/package/react-native-create-thumbnail), but then I thought for the purpose of the app I shouldn't overcomplicate it and added some working links.
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+i've realized i need to use somethign different than Pressable. // instead of Pressable to use TouchableNativeFeedback for Android TV platform and TouchableOpacity for tvOS platform.
+Removed Pressable from project, replaced with mentioned components.

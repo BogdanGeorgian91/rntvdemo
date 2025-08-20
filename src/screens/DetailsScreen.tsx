@@ -1,33 +1,80 @@
 import React, { useState } from 'react';
-import { View, Text, Image, Pressable, StyleSheet, ScrollView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableNativeFeedback,
+  TouchableOpacity,
+  Platform,
+} from 'react-native';
 import { NavigationProp, RouteProp } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import { RootStackParamList } from '../types';
 import { TV_THEME } from '../styles/theme';
+import { formatDurationDetail } from '../utils/utils';
 
 interface DetailsScreenProps {
   navigation: NavigationProp<RootStackParamList, 'Details'>;
   route: RouteProp<RootStackParamList, 'Details'>;
 }
 
-export const DetailsScreen: React.FC<DetailsScreenProps> = ({ navigation, route }) => {
+export const DetailsScreen: React.FC<DetailsScreenProps> = ({
+  navigation,
+  route,
+}) => {
   const { item } = route.params;
   const [playButtonFocused, setPlayButtonFocused] = useState(false);
 
-  const formatDuration = (seconds: number): string => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    
-    if (hours > 0) {
-      return `${hours}h ${minutes}m`;
-    }
-    return `${minutes}m ${secs}s`;
-  };
+  const canUseForeground =
+    Platform.OS === 'android' &&
+    TouchableNativeFeedback.canUseNativeForeground &&
+    TouchableNativeFeedback.canUseNativeForeground();
 
   const handlePlayPress = () => {
     navigation.navigate('Player', { item });
   };
+
+  const imgSrc = item?.thumbnail
+    ? {
+        uri: item.thumbnail,
+        priority: FastImage.priority.high,
+      }
+    : require('../assets/imgs/videoPlaceholder.png');
+
+  const returnPlatformBtn =
+    Platform.OS === 'android' && Platform.isTV ? (
+      <TouchableNativeFeedback
+        onPress={handlePlayPress}
+        onFocus={() => setPlayButtonFocused(true)}
+        onBlur={() => setPlayButtonFocused(false)}
+        hasTVPreferredFocus={true}
+        useForeground={canUseForeground}
+      >
+        <View
+          style={[
+            styles.playButton,
+            playButtonFocused && styles.playButtonFocused,
+          ]}
+        >
+          <Text style={styles.playButtonText}>PLAY</Text>
+        </View>
+      </TouchableNativeFeedback>
+    ) : (
+      <TouchableOpacity
+        style={[
+          styles.playButton,
+          playButtonFocused && styles.playButtonFocused,
+        ]}
+        activeOpacity={0.7}
+        onPress={handlePlayPress}
+        onFocus={() => setPlayButtonFocused(true)}
+        onBlur={() => setPlayButtonFocused(false)}
+        hasTVPreferredFocus={true}
+      >
+        <Text style={styles.playButtonText}>PLAY</Text>
+      </TouchableOpacity>
+    );
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -35,35 +82,26 @@ export const DetailsScreen: React.FC<DetailsScreenProps> = ({ navigation, route 
         <View style={styles.posterSection}>
           <FastImage
             style={styles.poster}
-            source={{
-              uri: item.thumbnail,
-              priority: FastImage.priority.high,
-            }}
+            source={imgSrc}
             resizeMode={FastImage.resizeMode.cover}
           />
         </View>
-        
+
         <View style={styles.infoSection}>
-          <Text style={styles.title}>{item.title}</Text>
-          
+          <Text style={styles.title}>{item?.title}</Text>
+
           <View style={styles.metadata}>
-            <Text style={styles.duration}>Duration: {formatDuration(item.duration)}</Text>
+            <Text style={styles.duration}>
+              Duration: {formatDurationDetail(item.duration)}
+            </Text>
             <Text style={styles.format}>
-              Format: {item.streamUrl.includes('.m3u8') ? 'HLS' : 'MP4'}
+              Format: {item?.streamUrl.includes('.m3u8') ? 'HLS' : 'MP4'}
             </Text>
           </View>
-          
+
           <Text style={styles.description}>{item.description}</Text>
-          
-          <Pressable
-            style={[styles.playButton, playButtonFocused && styles.playButtonFocused]}
-            onPress={handlePlayPress}
-            onFocus={() => setPlayButtonFocused(true)}
-            onBlur={() => setPlayButtonFocused(false)}
-            hasTVPreferredFocus={true}
-          >
-            <Text style={styles.playButtonText}>PLAY</Text>
-          </Pressable>
+
+          {returnPlatformBtn}
         </View>
       </View>
     </ScrollView>

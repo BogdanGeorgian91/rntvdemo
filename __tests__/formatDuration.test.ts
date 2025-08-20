@@ -1,4 +1,4 @@
-import { formatDuration } from '../src/utils/formatDuration';
+import { formatDuration } from '../src/utils/utils';
 
 describe('formatDuration', () => {
   it('formats seconds to MM:SS for durations under an hour', () => {
