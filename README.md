@@ -157,7 +157,7 @@ This change ensures consistent and expected behavior when using remote controls 
 - [ ] **Implement dynamic thumbnail generation** using `react-native-create-thumbnail` or similar solution
 - [ ] **Add comprehensive error handling** for network failures and video loading issues
 - [ ] **Implement caching strategy** for video metadata and thumbnails to improve app performance
-- [ ] **Performance optimizations** through optimizing bundle size, code splitting and lazy loading of video components, list specific optimizations etc
+- [ ] **Performance optimizations** through optimizing bundle size, code splitting and lazy loading of video components, list specific optimizations, platform specific optimizations etc
 - [ ] **Add support for subtitles/captions** for better accessibility
 - [ ] **Implement proper loading states** and skeleton screens for better UX
 - [ ] **Add app icons** - tried adding for the Android TV app but quit after few unsuccessful attempts, for the sake to completing the demo faster
