@@ -69,7 +69,7 @@ You've successfully run and modified your React Native App. :partying_face:
 ## Libraries Used:
 
 - "@d11/react-native-fast-image" which is an actively maintained fork of "react-native-fast-image": https://www.npmjs.com/package/@d11/react-native-fast-image
-- for navigation: @react-navigation/native and @react-navigation/stack
+- for navigation: @react-navigation/native and @react-navigation/native-stack because of focusing issue when navigating back: https://github.com/react-native-tvos/react-native-tvos/issues/815
 - react-native-gesture-handler
 - react-native-safe-area-context
 - react-native-screens
