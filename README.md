@@ -12,8 +12,6 @@ First:
 - run "npm/yarn install" in root directory
 - run "npm start" to start **Metro dev server**, the JavaScript build tool for React Native.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
-
 ## Step 2: Build and run your app
 
 With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run the Android TV or tvOS app:
@@ -57,13 +55,17 @@ yarn ios
 > **Note**: These commands automatically target TV platforms. The Android build launches on Android TV devices/emulators (configured via LEANBACK_LAUNCHER in AndroidManifest.xml), and the iOS build targets tvOS when using react-native-tvos.
 > If everything is set up correctly, you should see your new app running in the Android TV Emulator, tvOS Simulator, or your connected device.
 
-This is one way to run your app — you can also build it directly from Android Studio (Android Studio Narwhal Feature Drop | 2025.1.2 Patch 1 - Android TV simulator with Android 16) or Xcode (Version 16.4 (16F6) - Apple TV 3rd generation simulator) - (my way of doing it).
+This is one way to run your app — you can also build it directly from Android Studio or Xcode which is what I've done.
+I've used:
+
+- Android Studio Narwhal Feature Drop | 2025.1.2 Patch 1 with Android TV simulator - Android 16
+- xCode Version 16.4 - Apple TV 3rd generation simulator
 
 ## Step 3: Running Tests
 
-This project includes unit tests to ensure code quality and reliability.
+This project includes unit and integration tests to ensure code quality and reliability.
 
-### Run Unit Tests
+### Run Tests
 
 To run the test suite, use one of the following commands from the root of your React Native project:
 
@@ -101,15 +103,9 @@ yarn test:coverage
 
 > **Note**: Test coverage reports will be generated in the `coverage/` directory.
 
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
 ## Development Notes
 
 ### Libraries Used
-
-This project utilizes the following libraries to provide functionality for TV platforms:
 
 - **[react-native-fast-image](https://github.com/DylanVann/react-native-fast-image)** - High performance image component with caching capabilities for better performance. As it is not actively maintained anymore, in a real project I would have chosen **[@d11/react-native-fast-image](https://github.com/dream-sports-labs/react-native-fast-image)** because it's an actively maintained fork of it.
 - **[@react-navigation/native](https://github.com/react-navigation/react-navigation)** & **[@react-navigation/native-stack](https://github.com/react-navigation/react-navigation)** - Default Navigation library for RN apps and "/native-stack" chosen specifically to address focusing issues when navigating back on TV platforms (initially Claude chose "/stack" library). Found this GitHub issue which indicated me the solution as I've noticed the problem: [react-native-tvos#815](https://github.com/react-native-tvos/react-native-tvos/issues/815)
@@ -125,7 +121,7 @@ After the initial development phase bootstrapped with Claude Code, several refin
 - **Removed unused imports** - Cleaned up import statements highlighted by the editor to reduce bundle size
 - **Fixed React Hooks compliance** - Resolved a hook that wasn't called at the top level, which violated the Rules of Hooks (though the app remained functional)
 - **Package cleanup** - Removed the `@react-native/new-app-screen` package as it was no longer necessary after project initialization
-- **Fixed layout** - Adjusted flex proportions in DetailsScreen for better content distribution between poster and info sections (40/60 split)
+- **Fixed layout** - Adjusted flex proportions in HomeScreen and DetailsScreen for better content distribution
 - **Fixed focusing issue** - when navigating back to HomeScreen from DetailsScreen, first card was always re-focused although I've previously navigated from different card
 
 ### Asset Management
@@ -161,11 +157,7 @@ This change ensures consistent and expected behavior when using remote controls 
 - [ ] **Implement dynamic thumbnail generation** using `react-native-create-thumbnail` or similar solution
 - [ ] **Add comprehensive error handling** for network failures and video loading issues
 - [ ] **Implement caching strategy** for video metadata and thumbnails to improve app performance
-- [ ] **Add unit and integration tests** to ensure reliability across different TV platforms
-- [ ] **Optimize bundle size** through code splitting and lazy loading of video components
+- [ ] **Performance optimizations** through optimizing bundle size, code splitting and lazy loading of video components, list specific optimizations etc
 - [ ] **Add support for subtitles/captions** for better accessibility
 - [ ] **Implement proper loading states** and skeleton screens for better UX
-- [ ] **Add keyboard navigation support** for devices with physical keyboards
-- [ ] **Performance monitoring** integration to track app performance on TV devices
-- [ ] **Add deep linking support** for content discovery and sharing
 - [ ] **Add app icons** - tried adding for the Android TV app but quit after few unsuccessful attempts, for the sake to completing the demo faster
